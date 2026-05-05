@@ -3,3 +3,4 @@ include:
   - board: nice_nano//zmk
     shield: touchpad
     snippet: zmk-usb-logging
+    artifact-name: touchpad-nice_nano
