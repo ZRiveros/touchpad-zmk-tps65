@@ -1,16 +1,16 @@
 /*
  * Standalone BLE Touchpad — HolyKeebs TPS43 + NRF52840 SuperMini
  *
- * Wiring via adapter PCB (4 pins: standard HolyKeebs-guide):
- *
+ * Wiring:
  *   TPS43 adapter PCB    NRF52840 SuperMini (Pro Micro pinout)
  *   ─────────────────    ─────────────────────────────────────
  *   VCC  ─────────────►  VCC  (3.3V)
  *   GND  ─────────────►  GND
  *   SDA  ─────────────►  D2   (P0.17)
  *   SCL  ─────────────►  D3   (P0.20)
+ *   RDY  ─────────────►  D4   (P0.22)  ← Required (interrupt)
  *
- * Drivrutinen (suchobits fork) pollar via I2C — ingen RDY-pin krävs.
+ * The AYM1607 driver is interrupt-driven — RDY pin is mandatory.
  */
 
 / {
@@ -18,7 +18,7 @@
         zmk,kscan = &mock_kscan;
     };
 
-    /* Dummy kscan – ingen tangent-matris behövs */
+    /* Dummy kscan – no key matrix needed */
     mock_kscan: kscan {
         compatible = "zmk,kscan-mock";
         columns = <1>;
@@ -27,7 +27,7 @@
         exit-after = <0>;
     };
 
-    /* Input-lyssnare som kopplar touchpad-data till ZMK:s HID-mouse */
+    /* Input listener that connects touchpad data to ZMK's HID mouse */
     touchpad_listener: touchpad_listener {
         compatible = "zmk,input-listener";
         device = <&tps43>;
@@ -42,33 +42,32 @@
         compatible = "azoteq,iqs5xx";
         reg = <0x74>;
 
-        /* Ingen RDY-pin — drivrutinen faller tillbaka på polling */
-        /* Om du kopplar RDY kan du lägga till: */
-        /* rdy-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>; */
+        /* RDY pin — required for interrupt-driven operation */
+        rdy-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
 
-        /* RESET = Valfri, avkommentera om du kopplar RESET */
+        /* RESET — optional, uncomment if wired to D5 */
         /* reset-gpios = <&gpio0 24 GPIO_ACTIVE_LOW>; */
 
-        /* Gester */
+        /* Gestures */
         one-finger-tap;
         two-finger-tap;
         press-and-hold;
         press-and-hold-time = <250>;
 
-        /* Scrollning */
+        /* Scrolling */
         scroll;
         natural-scroll-y;
         natural-scroll-x;
 
-        /* Finjustering */
+        /* Fine-tuning */
         bottom-beta = <5>;
         stationary-threshold = <5>;
 
         /*
-         * Axel-konfiguration — justera efter orientering:
-         *   switch-xy;    ← byt X/Y om touchpaden är roterad 90°
-         *   flip-x;       ← invertera X
-         *   flip-y;       ← invertera Y
+         * Axis configuration — adjust based on orientation:
+         *   switch-xy;    ← swap X/Y if touchpad is rotated 90°
+         *   flip-x;       ← invert X
+         *   flip-y;       ← invert Y
          */
     };
 };
