@@ -10,7 +10,6 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <input/processors.dtsi>
 
 / {
     chosen {
@@ -32,11 +31,10 @@
         map = < RC(0,0) >;
     };
 
-    /* Connect touchpad → ZMK input, swap X↔Y axes */
+    /* Connect touchpad → ZMK input */
     tps43_input: tps43_input {
         compatible = "zmk,input-listener";
         device = <&tps43>;
-        input-processors = <&zip_xy_swap_mapper>;
     };
 };
 
@@ -88,6 +86,8 @@
         scroll;
         natural-scroll-y;
         natural-scroll-x;
+
+        switch-xy;
 
         /* Tuning */
         bottom-beta = <5>;
