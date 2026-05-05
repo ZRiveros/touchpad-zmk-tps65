@@ -1,5 +1,5 @@
 ---
 include:
-  - board: nice_nano_v2
+  - board: nice_nano//zmk
     shield: touchpad
     snippet: zmk-usb-logging
