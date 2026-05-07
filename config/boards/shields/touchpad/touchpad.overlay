@@ -84,9 +84,9 @@
 
         /* Scrolling */
         scroll;
-        natural-scroll-y;
         natural-scroll-x;
 
+        invert-y;
         switch-xy;
 
         /* Tuning */
