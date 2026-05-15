@@ -1,6 +1,6 @@
 ---
 include:
-  - board: nice_nano//zmk
+  - board: nice_nano_v2
     shield: touchpad
     snippet: zmk-usb-logging
-    artifact-name: touchpad-nice_nano
+    artifact-name: thenar-tpad-nice_nano_v2

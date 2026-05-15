@@ -1,5 +1,5 @@
 /*
- * Standalone BLE Touchpad — TPS43 + NRF52840 SuperMini
+ * Standalone BLE Touchpad — TPS65 + NRF52840 SuperMini
  *
  * Wiring:
  *   VCC → 3.3V
@@ -7,6 +7,9 @@
  *   SDA → D2 (P0.17)
  *   SCL → D3 (P0.20)
  *   RDY → D4 (P0.22)  ← Required (interrupt-driven)
+ *
+ * Axis orientation: Length (65mm) runs vertically (Y axis).
+ * If movement is inverted or swapped, adjust flip-x/flip-y/switch-xy below.
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
@@ -32,9 +35,9 @@
     };
 
     /* Connect touchpad → ZMK input */
-    tps43_input: tps43_input {
+    tps65_input: tps65_input {
         compatible = "zmk,input-listener";
-        device = <&tps43>;
+        device = <&tps65>;
     };
 };
 
@@ -65,7 +68,7 @@
     pinctrl-1 = <&i2c0_sleep>;
     pinctrl-names = "default", "sleep";
 
-    tps43: iqs5xx@74 {
+    tps65: iqs5xx@74 {
         compatible = "azoteq,iqs5xx";
         reg = <0x74>;
         status = "okay";
@@ -86,6 +89,13 @@
         scroll;
         natural-scroll-x;
 
+        /*
+         * Axis mapping — TPS65 length (65mm) mounted vertically.
+         * Adjust these if axes are swapped or inverted after testing:
+         *   flip-x;       ← invert horizontal
+         *   flip-y;       ← invert vertical
+         *   switch-xy;    ← swap X and Y axes
+         */
         flip-y;
         switch-xy;
 

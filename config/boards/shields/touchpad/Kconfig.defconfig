@@ -1,6 +1,6 @@
 if SHIELD_TOUCHPAD
 
 config ZMK_KEYBOARD_NAME
-    default "Touchpad"
+    default "Thenar Tpad"
 
 endif
