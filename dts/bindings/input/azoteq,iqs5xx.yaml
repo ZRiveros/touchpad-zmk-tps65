@@ -1,0 +1,72 @@
+description: Azoteq IQS5XX touchpad common properties
+
+compatible: "azoteq,iqs5xx"
+
+include: i2c-device.yaml
+
+properties:
+  rdy-gpios:
+    type: phandle-array
+    description: "Data Ready pin (optional — omit for polling mode)"
+
+  reset-gpios:
+    type: phandle-array
+    description: "Reset pin (optional)"
+
+  poll-interval-ms:
+    type: int
+    default: 10
+    description: "Polling interval in ms when rdy-gpios is not specified"
+
+  one-finger-tap:
+    type: boolean
+    description: "Register single finger tap as left click"
+
+  press-and-hold:
+    type: boolean
+    description: "Register press and hold as continuous left click"
+
+  press-and-hold-time:
+    type: int
+    default: 250
+    description: "Time in ms (added to tap time) for press-and-hold gesture"
+
+  two-finger-tap:
+    type: boolean
+    description: "Register two finger tap as right click"
+
+  scroll:
+    type: boolean
+    description: "Enable scroll gestures"
+
+  natural-scroll-x:
+    type: boolean
+    description: "Content tracks finger on X axis when scrolling"
+
+  natural-scroll-y:
+    type: boolean
+    description: "Content tracks finger on Y axis when scrolling"
+
+  switch-xy:
+    type: boolean
+    description: "Swap X and Y axes"
+
+  flip-x:
+    type: boolean
+    description: "Invert X axis direction"
+
+  flip-y:
+    type: boolean
+    description: "Invert Y axis direction"
+
+  bottom-beta:
+    type: int
+    default: 5
+    description: |
+      Filtering at slow speeds.
+      0: Most filtering (smooth, laggy). 255: Least filtering (responsive).
+
+  stationary-threshold:
+    type: int
+    default: 5
+    description: "Pixels finger must move to not be considered stationary"

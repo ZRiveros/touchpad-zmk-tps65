@@ -1,0 +1,8 @@
+config INPUT_AZOTEQ_IQS5XX
+	bool "Azoteq IQS5XX trackpad driver"
+	default y
+	depends on I2C
+	depends on INPUT
+	help
+	  Enable driver for Azoteq IQS5XX based trackpads (TPS43, TPS65, etc.)
+	  Supports both interrupt mode (RDY pin) and polling mode.

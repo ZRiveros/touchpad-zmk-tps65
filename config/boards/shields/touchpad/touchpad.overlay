@@ -1,12 +1,11 @@
 /*
  * Standalone BLE Touchpad — TPS65 + NRF52840 SuperMini
  *
- * Wiring:
+ * Wiring (4 pins only — polling mode, no RDY needed):
  *   VCC → 3.3V
  *   GND → GND
  *   SDA → D2 (P0.17)
  *   SCL → D3 (P0.20)
- *   RDY → D4 (P0.22)  ← Required (interrupt-driven)
  *
  * Axis orientation: Length (65mm) runs vertically (Y axis).
  * If movement is inverted or swapped, adjust flip-x/flip-y/switch-xy below.
@@ -73,11 +72,8 @@
         reg = <0x74>;
         status = "okay";
 
-        /* RDY pin — required for interrupt-driven operation */
-        rdy-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
-
-        /* RESET — optional, uncomment if wired to D5 */
-        /* reset-gpios = <&gpio0 24 GPIO_ACTIVE_LOW>; */
+        /* Polling mode — no RDY pin needed (4-wire: SDA, SCL, VCC, GND) */
+        poll-interval-ms = <10>;
 
         /* Gestures */
         one-finger-tap;
