@@ -92,6 +92,7 @@
          *   flip-y;       ← invert vertical
          *   switch-xy;    ← swap X and Y axes
          */
+        flip-x;
         flip-y;
         switch-xy;
 
