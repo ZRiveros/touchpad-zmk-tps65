@@ -82,8 +82,16 @@ static void iqs5xx_work_handler(struct k_work *work) {
     uint8_t sys_info_0, sys_info_1, gesture_events_0, gesture_events_1, num_fingers;
     int ret;
 
+    /*
+     * In polling mode, the chip NACKs I2C outside its communication window.
+     * This is normal — just silently bail and try again next poll cycle.
+     */
     ret = iqs5xx_read_reg8(dev, IQS5XX_SYSTEM_INFO_0, &sys_info_0);
     if (ret < 0) {
+        /* NACK is expected in polling mode — not an error */
+        if (!config->rdy_gpio.port) {
+            return;
+        }
         LOG_ERR("Failed to read system info 0: %d", ret);
         goto end_comm;
     }
@@ -379,11 +387,33 @@ static int iqs5xx_init(const struct device *dev) {
     /* Wait for device to be ready */
     k_msleep(100);
 
-    /* Setup device configuration */
-    ret = iqs5xx_setup_device(dev);
-    if (ret < 0) {
-        LOG_ERR("Failed to setup device: %d", ret);
-        return ret;
+    /*
+     * Setup device configuration.
+     * In polling mode, the chip may NACK if we miss its comm window,
+     * so retry setup multiple times with delays between attempts.
+     */
+    if (!config->rdy_gpio.port) {
+        /* Polling mode: retry up to 50 times (~500ms total) */
+        int attempts = 50;
+        for (int i = 0; i < attempts; i++) {
+            ret = iqs5xx_setup_device(dev);
+            if (ret == 0) {
+                LOG_INF("Device setup succeeded on attempt %d", i + 1);
+                break;
+            }
+            k_msleep(10);
+        }
+        if (ret < 0) {
+            LOG_ERR("Failed to setup device after %d attempts: %d", attempts, ret);
+            return ret;
+        }
+    } else {
+        /* Interrupt mode: single attempt (RDY guarantees comm window) */
+        ret = iqs5xx_setup_device(dev);
+        if (ret < 0) {
+            LOG_ERR("Failed to setup device: %d", ret);
+            return ret;
+        }
     }
 
     /* Start polling timer if in polling mode */
